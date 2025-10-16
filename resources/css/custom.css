@@ -1,0 +1,122 @@
+
+
+/* ---------------------------------------------------------------------- */
+/* LAYOUT BASE (Tailwind non usa display:flex sul body di default) */
+/* ---------------------------------------------------------------------- */
+
+/* La classe .sidebar e .main-content sono definite nel file Blade */
+body {
+    background-color: #f4f7f9; /* Tailwind: bg-gray-50 o bg-white */
+    font-family: "Segoe UI", sans-serif;
+    margin: 0;
+
+    /* Layout a due colonne */
+    display: flex;
+    min-height: 100vh;
+}
+
+/* ---------------------------------------------------------------------- */
+/* SIDEBAR (NAVIGAZIONE) */
+/* ---------------------------------------------------------------------- */
+
+.sidebar {
+    /* Proprietà tradotte */
+    @apply bg-gray-800 min-h-screen p-5 fixed transition-all duration-300 ease-in-out shadow-lg;
+    width: 220px;
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2);
+}
+
+.sidebar:hover {
+    width: 240px;
+}
+
+.sidebar h4 {
+    /* Proprietà tradotte */
+    @apply text-white font-bold text-center mb-5 text-lg tracking-wider border-b border-gray-600 pb-2;
+}
+
+.sidebar a {
+    /* La regola @apply è ottima, ma assicuriamoci che il colore sia prevalente */
+    @apply text-gray-300 font-medium mb-1 flex items-center py-3 px-5 rounded-lg transition-all duration-300 ease-in-out text-base;
+    color: #ddd !important; /* Forza il colore grigio chiaro */
+}
+
+
+
+.sidebar a:hover {
+    /* Proprietà tradotte */
+    @apply bg-blue-500 text-white;
+}
+
+/* ---------------------------------------------------------------------- */
+/* CONTENUTO PRINCIPALE */
+/* ---------------------------------------------------------------------- */
+
+.main-content {
+    /* Proprietà tradotte */
+    padding: 30px;
+    /* La proprietà margin-left e width devono essere dinamiche a causa di :hover */
+    margin-left: 220px; /* Larghezza base della sidebar */
+    width: calc(100% - 220px);
+
+    @apply flex flex-col items-center min-h-screen transition-all duration-300 ease-in-out;
+}
+
+/* Adatta il margine del contenuto quando la sidebar viene espansa */
+.sidebar:hover ~ .main-content {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+}
+
+/* ---------------------------------------------------------------------- */
+/* DESIGN DEI COMPONENTI RIUTILIZZABILI (JUMBOTRON, TABELLE, CODICE) */
+/* ---------------------------------------------------------------------- */
+
+/* Wrapper principale per le lezioni (sostituisce .jumbotron) */
+/* Nota: La maggior parte di queste classi è già in Tailwind nei file Blade convertiti */
+.lesson-content {
+    /* Imposta uno spazio verticale tra gli elementi principali della lezione */
+    @apply space-y-6;
+}
+
+/* Stile per i titoli delle sezioni */
+.lesson-content h4 {
+    @apply text-xl font-bold text-gray-700 mt-6 pt-4;
+}
+
+/* Blocco di codice */
+.lesson-content pre {
+    /* Proprietà tradotte */
+    @apply bg-gray-800 text-yellow-300 p-4 rounded-lg overflow-x-auto shadow-inner;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+/* Codice inline/selezionato */
+.lesson-content code {
+    @apply text-yellow-400 bg-gray-900 bg-opacity-5 p-1 rounded-sm font-mono;
+}
+
+/* Tabella di confronto (sostituisce .table.table-bordered) */
+.lesson-content table {
+    @apply mt-8 border-collapse w-full shadow-md rounded-lg overflow-hidden;
+}
+
+.lesson-content table th,
+.lesson-content table td {
+    @apply p-3 border border-gray-300;
+}
+
+.lesson-content table th {
+    /* Colori del gradiente (li ho semplificati, ma puoi usare @apply per stili specifici) */
+    background: linear-gradient(135deg, #6c5ce7, #00b894);
+    @apply text-white font-semibold;
+}
+
+.lesson-content table td {
+    @apply bg-white;
+}
+
+/* Footer (il tuo footer è già stato convertito con utility, ma lo stile qui è di backup) */
+footer {
+    @apply text-center text-gray-500 mt-8;
+}
