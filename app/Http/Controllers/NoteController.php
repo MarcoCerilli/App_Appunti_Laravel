@@ -16,8 +16,8 @@ class NoteController extends Controller
     {
         // Ordina le note: prima le pinned (fissate) e poi le altre per ID decrescente
         $notes = Note::orderBy('is_pinned', 'desc')
-                    ->orderBy('id', 'desc')
-                    ->get();
+            ->orderBy('id', 'desc')
+            ->get();
         return view('notes.index', compact('notes'));
     }
 
@@ -51,6 +51,9 @@ class NoteController extends Controller
      */
     public function edit(Note $note)
     {
+        // 🚨 POLICY CHECK: Verifica che l'utente possa vedere il form di modifica
+        $this->authorize('update', $note);
+
         return view('notes.edit', compact('note'));
     }
 
@@ -59,10 +62,11 @@ class NoteController extends Controller
      */
     public function update(UpdateNoteRequest $request, Note $note)
     {
+        // 🚨 POLICY CHECK: Verifica che l'utente possa aggiornare la nota
+        $this->authorize('update', $note);
+
         $note->update($request->validated());
         return redirect()->route('notes.index', $note)->with('SUCCESSO', 'NOTA AGGIORNATA CON SUCCESSO');
-
-
     }
 
     /**
@@ -70,6 +74,8 @@ class NoteController extends Controller
      */
     public function destroy(Note $note)
     {
+        // 🚨 POLICY CHECK: Verifica che l'utente possa eliminare la nota
+        $this->authorize('delete', $note);
         $note->delete();
         return redirect()->route('notes.index', $note)->with('SUCCESSO', 'NOTA ELIMINATA CON SUCCESSO');
     }

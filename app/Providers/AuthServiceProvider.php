@@ -1,98 +1,44 @@
 <?php
 
-return [
+namespace App\Providers;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Default Authentication Guard
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default authentication "guard" and password
-    | reset options for your application. You may change these defaults
-    | as required, but they're a perfect start.
-    |
-    */
+use App\Models\Note;
+use App\Models\User; // Importa il modello User
+use App\Policies\NotePolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-    'defaults' => [
-        // !!! MODIFICA CRUCIALE: Usiamo il nostro guard manuale di default
-        'guard' => 'web', // Lasciamo 'web', ma lo configureremo sotto per usare 'manual'
-        'passwords' => 'users',
-    ],
+class AuthServiceProvider extends ServiceProvider
+{
+     /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        Note::class => NotePolicy::class,
 
-    /*
-    |--------------------------------------------------------------------------
-    | Authentication Guards
-    |--------------------------------------------------------------------------
-    |
-    | Next, you may define every authentication guard for your application.
-    | Of course, a great starting point is the "web" guard which uses
-    | session storage and the Eloquent user provider.
-    |
-    */
+    ];
 
-    'guards' => [
-        'web' => [
-            // !!! MODIFICA CRUCIALE: Il guard 'web' ora usa il driver 'manual'
-            'driver' => 'manual',
-            'provider' => 'users',
-        ],
-    ],
+    public function boot()
+    {
+        $this->registerPolicies();
 
-    /*
-    |--------------------------------------------------------------------------
-    | User Providers
-    |--------------------------------------------------------------------------
-    |
-    | All authentication providers for your application will be configured here.
-    | You can add as many as you want and you can even define your own.
-    |
-    | Laravel has several great providers and you are free to modify them.
-    |
-    */
+        // -----------------------------------------------------------------------
+        // UTILIZZIAMO SOLO Gate::define PER TESTARE LA LOGICA
+        // -----------------------------------------------------------------------
+        Gate::define('access-admin', function (User $user) {
 
-    'providers' => [
-        'users' => [
-            'driver' => 'eloquent',
-            'model' => App\Models\User::class,
-        ],
+            // 🚨 DD DI TEST FINALE: Controlla se l'ID è 1
+        //    dd('Gate::define chiamato. User ID:', $user->id);
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
-    ],
+            // Accesso consentito per l'ID 1 (Super Admin)
+            if ($user->id == 1) {
+                return true;
+            }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Resetting Passwords
-    |--------------------------------------------------------------------------
-    |
-    | You may specify how the password reset functionality should work for
-    | any of your password brokers and providers. You may also set the
-    | number of seconds before a reset token expires.
-    |
-    */
-
-    'passwords' => [
-        'users' => [
-            'provider' => 'users',
-            'table' => 'password_resets',
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Password Confirmation Timeout
-    |--------------------------------------------------------------------------
-    |
-    | Here you may define the amount of seconds before a password confirmation
-    | times out and the user is prompted to re-enter their password via the
-    | confirmation screen. By default, the timeout lasts for three hours.
-    |
-    */
-
-    'password_timeout' => 10800,
-
-];
+            // Accesso negato per tutti gli altri
+            return false;
+        });
+    }
+}

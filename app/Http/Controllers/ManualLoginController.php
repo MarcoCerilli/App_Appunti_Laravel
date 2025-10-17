@@ -56,15 +56,18 @@ class ManualLoginController extends Controller
         ]);
 
         // 2. Tentativo di autenticazione tramite il guard 'web' (di default)
-        // La funzione Auth::attempt() cerca l'utente e verifica la password
-        // Se ha successo, crea la sessione e ritorna true.
-
         if (Auth::attempt($credentials)) {
 
-            // Rigenera l'utente a una pagina sicura (es. DashBoard o Home)
+             // Rigenera la sessione per prevenire attacchi di Session Fixation
             $request->session()->regenerate();
 
+           // *** NUOVA RIGA: Imposta la sessione di conferma password ***
+            // Questa riga dice a Laravel che la password è stata appena verificata,
+            // evitando la richiesta di conferma immediata dopo il login.
+            $request->session()->put('auth.password_confirmed_at', time());
 
+
+            // reindirizziamo a una pagina sicura
             return redirect()->intended('/');
         }
 

@@ -32,12 +32,15 @@
             <a href="{{ route('seeders') }}" class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('seeders') ? 'bg-gray-700 font-bold' : '' }}">
                 Seeders
             </a>
+            <a href="{{ route('service.providers') }}" class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('service.providers') ? 'bg-gray-700 font-bold' : '' }}">
+                Service Providers
+            </a>
             <a href="{{ route('notes.index') }}" class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('notes.*') ? 'bg-gray-700 font-bold' : '' }}">
                 Gestione Appunti
             </a>
-            <a href="{{ route('Guards&Providers') }}"
-                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('Guards&Providers') ? 'bg-gray-700 font-bold' : '' }}">
-                Guards&Providers
+            <a href="{{ route('guards.providers') }}"
+                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('guards.providers') ? 'bg-gray-700 font-bold' : '' }}">
+                Guards-Providers
             </a>
             <a href="{{ route('manual.login') }}"
                 class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('manual.login') ? 'bg-gray-700 font-bold' : '' }}">
