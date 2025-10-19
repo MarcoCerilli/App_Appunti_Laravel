@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -14,21 +15,24 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-    <!-- Styling per un look più moderno e coerente con lo sfondo scuro della Home -->
     <style>
-        /* Imposta il corpo della pagina, ma la classe bg-gray-900 (dark) è già nel <body> */
+        /* Styling per assicurare che body e main gestiscano bene lo spazio */
         body {
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
-        main {
-            flex-grow: 1; /* Assicura che il contenuto riempia lo spazio rimanente */
+
+        /* Rimuoviamo il flex-grow da main qui, lo useremo nel div interno */
+        .page-content-wrapper {
+            flex-grow: 1; /* NECESSARIO per spingere il footer in fondo */
         }
     </style>
 </head>
+
+{{-- Abbiamo la classe dark nel body e bg-gray-900 per lo sfondo --}}
+
 <body class="font-sans text-gray-900 antialiased bg-gray-900 dark">
-    {{-- La classe dark nel body attiva la modalità scura per tutti i componenti Tailwind --}}
 
     {{-- HEADER MINIMALE e TRASPARENTE --}}
     <header class="py-4">
@@ -44,30 +48,48 @@
             <nav class="flex items-center space-x-4">
                 @auth
                     {{-- Utente loggato --}}
-                    <a href="{{ url('/dashboard') }}" class="text-sm text-gray-300 hover:text-indigo-400 font-semibold transition duration-150">Dashboard</a>
+                    <a href="{{ url('/dashboard') }}"
+                        class="text-sm text-gray-300 hover:text-indigo-400 font-semibold transition duration-150">Dashboard</a>
                 @else
                     {{-- Ospite --}}
-                    <a href="{{ route('login') }}" class="text-sm text-gray-300 hover:text-indigo-400 font-semibold transition duration-150 px-3 py-1.5 rounded-lg border border-transparent hover:border-indigo-400">Log In</a>
+                    <a href="{{ route('login') }}"
+                        class="text-sm text-gray-300 hover:text-indigo-400 font-semibold transition duration-150 px-3 py-1.5 rounded-lg border border-transparent hover:border-indigo-400">Log
+                        In</a>
                     @if (Route::has('register'))
-                        <a href="{{ route('register') }}" class="text-sm text-white bg-indigo-600 hover:bg-indigo-700 py-1.5 px-3 rounded-lg font-semibold transition duration-150 shadow-lg">Registrati</a>
+                        <a href="{{ route('register') }}"
+                            class="text-sm text-white bg-indigo-600 hover:bg-indigo-700 py-1.5 px-3 rounded-lg font-semibold transition duration-150 shadow-lg">Registrati</a>
                     @endif
                 @endauth
             </nav>
         </div>
     </header>
 
-    {{-- CONTENUTO PRINCIPALE --}}
-    <main class="flex flex-col flex-grow">
-        {{-- Questo è lo slot di contenuto che welcome.blade.php riempirà con @section('content') --}}
-        @yield('content')
-    </main>
+    {{-- CONTENUTO PRINCIPALE (con centratura del form) --}}
+    <div class="page-content-wrapper flex flex-col items-center justify-center">
+        {{-- Ho cambiato justify-start in justify-center per la home page --}}
+        {{-- Inoltre ho rimosso py-10, lo gestiamo nel contenuto specifico se necessario --}}
 
-    {{-- FOOTER MINIMALE e TRASPARENTE --}}
-    <footer class="py-4 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-400">
-            &copy; {{ date('Y') }} {{ config('app.name', 'Laravel App') }}.
+        {{-- Caso 1: È un Componente Blade (<x-guest-layout>), come le form di autenticazione --}}
+        @if (isset($slot))
+            <main class="w-full sm:max-w-md px-6 py-4 bg-white dark:bg-gray-800 shadow-xl rounded-xl">
+                {{ $slot }}
+            </main>
+        @else
+            {{-- Caso 2: È un Layout Esteso (@extends), come la Home Page --}}
+            {{-- Avvolgiamo il contenuto in un div a tutta larghezza e altezza per farlo estendere --}}
+            <div class="w-full h-full flex items-center justify-center">
+                @yield('content')
+            </div>
+        @endif
+    </div>
+
+    {{-- FOOTER MINIMALE --}}
+    <footer class="pt-4 pb-4 border-t border-gray-700 text-center text-gray-400 text-lg w-full">
+        <div class="max-w-md mx-auto">
+            <small>© 2025 Marco Cerilli — PHP, Symfony & Laravel Specialist</small>
         </div>
     </footer>
 
 </body>
+
 </html>

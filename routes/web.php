@@ -58,7 +58,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 1. DASHBOARD (Nuova Home per Utente Loggato)
     Route::get('/dashboard', function () {
-        return view('dashboard');
+        // Controlla se c'è un messaggio di errore proveniente dal middleware Admin
+        $error = session('error');
+        return view('dashboard', [
+            'error_message' => $error,
+            'user_role' => (Auth::id() == 1 ? 'Admin' : 'Standard')
+        ]);
     })->name('dashboard');
 
 
@@ -116,12 +121,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return view('service_providers');
     })->name('service.providers');
 
+    // ** NUOVA ROTTA DIDATTICA: AUTH FLESSIBILE (LEZIONE 121) **
+    Route::get('/auth-flexible', function () {
+        return view('lesson_121_index');
+    })->name('auth.flexible');
+    // ROTTE PER LA LEZIONE SU STORAGE, SESSIONI E CACHE (LEZIONI 117-129)
+    // Uso un unico file blade per l'introduzione, visto che sono molte lezioni
+    Route::get('/storage-sessions-cache', function () {
+        return view('storage_cache_session_intro');
+    })->name('storage.cache.session.intro');
+}); // Fine del Gruppo di Rotte Protette ['auth', 'verified']
 
-    // 5. ROTTA ADMIN
+/*
+|--------------------------------------------------------------------------
+| ROTTA ADMIN (PROTETTA DAL MIDDLEWARE 'admin' DEDICATO)
+|--------------------------------------------------------------------------
+| La rotta '/admin' è mantenuta, ma punta a un Controller
+| che gestisce internamente l'autorizzazione (come da lezione).
+*/
+
+// La rotta '/admin' mantiene i middleware base di auth e verified.
+// Il controllo 'admin' avviene all'interno di AdminController::index.
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])
         ->name('admin.index');
-
-}); // Fine del Gruppo di Rotte Protette
+});
 
 
 /*

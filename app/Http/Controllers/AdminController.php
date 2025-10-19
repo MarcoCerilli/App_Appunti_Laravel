@@ -3,22 +3,41 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class AdminController extends Controller
 {
     /**
-     * Mostra il pannello di amministrazione.
-     * Accesso protetto dal Gate 'view-admin-panel'.
+     * Mostra la pagina di amministrazione, gestendo l'accesso negato.
      */
     public function index()
     {
-        // 1. Applica la logica al Gate
-        // 2. Se l'utente non ha il permesso 'view-admin-panel', questa riga lancia un eccezione HttpException 403
-        // e blocca l' esecuzione.
-       // Gate::authorize('access-admin');
+        // 1. Definisci le variabili iniziali per la vista
+        $isAdmin = false;
+        $messageTitle = 'Area Riservata';
+        $messageContent = 'Devi essere un amministratore per accedere a questa sezione.';
+        $statusClass = 'bg-red-100 text-red-800';
+        $statusIcon = '❌';
 
-        // Se l'esecuzione arriva qui, l'utente è autorizzato.
-        return view('admin.index');
+
+        // 2. Controllo il Gate 'admin'
+        if (Gate::allows('admin')) {
+            //Se l'utente è un ADMIN
+            $isAdmin = true;
+            $messageTitle = 'Area di Amministrazione Protetta';
+            $messageContent = 'ADMIN: Accesso garantito dal Gate! Qui puoi caricare i contenuti riservati solo all\'Amministratore.';
+            $statusClass = 'bg-green-100 text-green-800';
+            $statusIcon = '✅';
+        }
+        // 3. Ritorna la vista, passandogli tutte le variabili di stato
+        return view('admin.index', [
+            $isAdmin = $isAdmin,
+            $messageTitle = $messageTitle,
+            $messageContent = $messageContent,
+            $statusClass = $statusClass,
+            $statusIcon = $statusIcon
+
+        ]);
     }
 }

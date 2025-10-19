@@ -4,103 +4,61 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 
 class ManualLoginController extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * Esegue il login forzato come Amministratore (ID 1)
+     * e reindirizza all'area protetta.
      */
-    public function index()
+    public function loginAsAdmin()
     {
-        //
+        //1. Trova l'utente che vuoi autenticare(ID 1)
+        $user = User::findOrFail(1);
+
+        //2. Stabilisce la sessione: logga l'utente forzatamente
+        Auth::login($user);
+
+         // 3. Reindirizza l'utente alla dashboard admin
+        // Il middleware 'admin' verrà eseguito su questa rotta di destinazione
+        return redirect()->route('admin.index');
     }
 
-    /**
-     * Show the form for creating a new resource.
+
+ /**
+     * Esegue il login forzato come Utente Standard (ID 2)
+     * e reindirizza alla dashboard standard.
      */
-    public function create()
+    public function loginAsUser()
     {
-        //
-    }
+        // 1. Trova l'utente che vuoi autenticare (ID 2)
+        $user = User::findOrFail(2);
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+         // 2. STABILISCE LA SESSIONE: Logga l'utente forzatamente
+        Auth::login($user);
+        return redirect()->route('dashboard');
 
-    /**
-     * Display the specified resource.
-     */
-    public function showLoginForm()
-    {
-        //Se l'utente è autenticato, rendirizziamo alla home
-        if (Auth::check()) {
-            return redirect('/');
-        }
-        return view('auth.manual-login');
-    }
-
-    /**
-     *   GESTISCE IL TENTATIVO DI LOGIN MANUALE
-     */
-    public function login(Request $request)
-    {
-        //1. Validazione dei dati
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
-
-        // 2. Tentativo di autenticazione tramite il guard 'web' (di default)
-        if (Auth::attempt($credentials)) {
-
-             // Rigenera la sessione per prevenire attacchi di Session Fixation
-            $request->session()->regenerate();
-
-           // *** NUOVA RIGA: Imposta la sessione di conferma password ***
-            // Questa riga dice a Laravel che la password è stata appena verificata,
-            // evitando la richiesta di conferma immediata dopo il login.
-            $request->session()->put('auth.password_confirmed_at', time());
-
-
-            // reindirizziamo a una pagina sicura
-            return redirect()->intended('/');
-        }
-
-        // 3.Fallimento:  Ritorna al form con un messaggio di errore
-        return back()->withErrors([
-            'email' => 'Le credenziali fornite non sono corrette.',
-        ])->onlyInput('email');
     }
 
 
     /**
-     * Update the specified resource in storage.
+     * Effettua il logout dell'utente.
      */
     public function logout(Request $request)
     {
-        //esegue il logout distruggendo la sessione di autenticazione
+        // 1. Logout dell'utente (rimuove l'autenticazione dalla sessione)
         Auth::logout();
 
-        //Invalida la sessione attuale
+        // 2. Invalida completamente la sessione
         $request->session()->invalidate();
 
-        // Rigenera il token CSRF
+        // 3. Rigenera il token CSRF per le future richieste
         $request->session()->regenerateToken();
 
-        // Reindirizza l'utente alla pagina di Login o Home
-        return redirect()->route('manual.login');
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        // 4. Reindirizza l'utente alla home
+        return redirect('/');
     }
 }
