@@ -6,9 +6,12 @@ use App\Http\Requests\StoreNoteRequest;
 use App\Http\Requests\UpdateNoteRequest;
 use App\Models\Note;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+
 
 class NoteController extends Controller
 {
+    use AuthorizesRequests;
     /**
      * 1. MOSTRA TUTTE LE NOTE
      */
@@ -34,7 +37,11 @@ class NoteController extends Controller
      */
     public function store(StoreNoteRequest $request)
     {
-        $note = Note::create($request->validated());
+        // 🚨 FIX: Aggiorniamo i dati validati per INCLUDERE il user_id dell'utente autenticato.
+        $validatedData = array_merge($request->validated(),[
+            'user_id' =>\Illuminate\Support\Facades\Auth::id(),
+        ]);
+        $note = Note::create($validatedData);
         return redirect()->route('notes.index')->with('SUCCESS', 'NOTA CREATO CON SUCCESSO!');
     }
 
@@ -43,7 +50,7 @@ class NoteController extends Controller
      */
     public function show(Note $note)
     {
-        return view('notes.show', compact('note'));
+        return view('notes.index', compact('note'));
     }
 
     /**

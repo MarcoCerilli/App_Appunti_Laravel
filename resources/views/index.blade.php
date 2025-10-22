@@ -58,6 +58,7 @@
 </head>
 
 {{-- CORREZIONE: Rimuovo 'overflow-hidden' dal body per permettere lo scroll della pagina principale --}}
+
 <body class="font-sans bg-gray-50">
 
     {{-- Overlay per mobile: Cliccando chiude la sidebar. Visibile solo su schermi piccoli --}}
@@ -71,9 +72,13 @@
                fixed top-0 left-0 z-50 transition-transform duration-300 transform -translate-x-full lg:translate-x-0 lg:shadow-xl">
 
         {{-- Bottone di chiusura per Mobile (Icona X) --}}
-        <button id="close-sidebar-btn" class="lg:hidden absolute top-4 right-4 text-white hover:text-gray-300 z-50" onclick="toggleSidebar()">
+        <button id="close-sidebar-btn" class="lg:hidden absolute top-4 right-4 text-white hover:text-gray-300 z-50"
+            onclick="toggleSidebar()">
             <!-- Icona X (Close) -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
         </button>
 
         <h4 class="text-xl font-semibold mb-4 border-b border-gray-700 pb-2">Menu Didattico</h4>
@@ -82,6 +87,10 @@
         <nav class="space-y-1 flex flex-col flex-grow overflow-y-auto pr-2">
 
             {{-- ********** LINK CON SINTASSI BLADE PRESERVATA ********** --}}
+            <a href="{{ route('notes.index') }}"
+                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('notes.*') ? 'bg-gray-700 font-bold' : '' }}">
+                Gestione Appunti
+            </a>
             <a href="{{ route('ereditarieta') }}"
                 class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('ereditarieta') ? 'bg-gray-700 font-bold' : '' }}">
                 Ereditarietà
@@ -106,10 +115,7 @@
                 class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('service.providers') ? 'bg-gray-700 font-bold' : '' }}">
                 Service Providers
             </a>
-            <a href="{{ route('notes.index') }}"
-                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('notes.*') ? 'bg-gray-700 font-bold' : '' }}">
-                Gestione Appunti
-            </a>
+
             <a href="{{ route('guards.providers') }}"
                 class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('guards.providers') ? 'bg-gray-700 font-bold' : '' }}">
                 Guards-Providers
@@ -122,15 +128,24 @@
                 class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('auth.flexible') ? 'bg-gray-700 font-bold' : '' }}">
                 Auth: Middleware vs Controller
             </a>
-            <a href="{{ route('storage.cache.session.intro') }}"
-                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('storage.cache.session.intro') ? 'bg-gray-700 font-bold' : '' }}">
+            <a href="{{ route('storage.sessioni.cache') }}"
+                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('storage.sessioni.cache') ? 'bg-gray-700 font-bold' : '' }}">
                 Storage, Sessioni & Cache (Intro)
+            </a>
+            <a href="{{ route('lezioni.notifiche_email') }}"
+                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('lezioni.notifiche_email') ? 'bg-gray-700 font-bold' : '' }}">
+                Notifiche Email
+            </a>
+            <a href="{{ route('appunti.comunicazioni') }}"
+                class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 {{ request()->routeIs('appunti.comunicazioni') ? 'bg-gray-700 font-bold' : '' }}">
+                Code & Supervisor
             </a>
             {{-- *************************************************************** --}}
 
             {{-- Aggiungo 10 link extra di test per garantire lo scroll interno alla sidebar --}}
             @for ($i = 1; $i <= 10; $i++)
-                <a href="#" class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 text-sm text-gray-400">
+                <a href="#"
+                    class="py-2 px-3 rounded-lg hover:bg-gray-700 transition duration-150 text-sm text-gray-400">
                     Test Scroll Link {{ $i }}
                 </a>
             @endfor
@@ -159,9 +174,14 @@
     <div class="main-content p-6 flex-grow bg-gray-50 min-h-screen lg:ml-64 pt-16 lg:pt-6">
 
         <!-- Menu Hamburger per Mobile (Visibile solo su schermi piccoli) -->
-        <button id="open-sidebar-btn" class="fixed top-4 left-4 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-xl transition duration-150 z-30" onclick="toggleSidebar()">
+        <button id="open-sidebar-btn"
+            class="fixed top-4 left-4 p-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg shadow-xl transition duration-150 z-30"
+            onclick="toggleSidebar()">
             <!-- Icona Hamburger -->
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
         </button>
 
         <div class="w-full max-w-4xl mx-auto">

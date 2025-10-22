@@ -128,9 +128,20 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // ROTTE PER LA LEZIONE SU STORAGE, SESSIONI E CACHE (LEZIONI 117-129)
     // Uso un unico file blade per l'introduzione, visto che sono molte lezioni
     Route::get('/storage-sessions-cache', function () {
-        return view('storage_cache_session_intro');
-    })->name('storage.cache.session.intro');
+        return view('storage_sessioni_cache');
+    })->name('storage.sessioni.cache');
+
+    Route::get('/lezione-notifiche-email', function () {
+       //Nome della vista che contiene il contenuto della lezione
+        return view('lezione_notifiche_email');
+    })->name('lezioni.notifiche_email');
 }); // Fine del Gruppo di Rotte Protette ['auth', 'verified']
+
+Route::get('/appunti/comunicazioni', function () {
+       //Nome della vista che contiene il contenuto della lezione
+        return view('lezione_comunicazioni');
+    })->name('appunti.comunicazioni');
+
 
 /*
 |--------------------------------------------------------------------------
